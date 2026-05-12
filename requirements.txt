@@ -1,29 +1,26 @@
-# Core Deep Learning
-torch>=2.0.0
-torchvision>=0.15.0
-torchaudio>=2.0.0
+torch
+torchvision
+torchaudio
 
-# Multimodal Encoders (CLIP)
-# Projects images and text into a shared 512-dimensional latent space [cite: 81, 84]
-ftfy
-regex
-tqdm
-git+https://github.com/openai/CLIP.git
+transformers
+datasets
+sentencepiece
 
-# Data Processing & Computer Vision
-# For ROI extraction and crop_and_resize pipeline [cite: 13]
-opencv-python
-pillow
 numpy
 pandas
 
-# Evaluation Metrics
-# For BLEU-4 and textual coherence analysis [cite: 36, 105]
-nltk
-scikit-learn
-torchmetrics
-
-# Explainability & Visualization
-# For generating Attention and Modality Influence Heatmaps [cite: 41, 42]
 matplotlib
 seaborn
+
+scikit-learn
+nltk
+
+opencv-python
+
+Pillow
+
+tqdm
+
+ipywidgets
+
+google-colab
