@@ -1,75 +1,37 @@
-Multimodal Grounded Sequence Prediction
-
-This repository contains the implementation and architectural enhancements for the Balanced Gated-Transformer (BGT). The project focuses on Visual Story Reasoning ($K \rightarrow K+1$), where the model predicts the subsequent visual frame and narrative text in a sequence by adaptively fusing multimodal inputs.
-
-1. Project Overview
-
-The core objective is to solve complex multimodal sequence prediction tasks. Unlike standard models that simply concatenate features, the BGT architecture treats visual and textual streams as equal narrative partners. We enhance the baseline by introducing fine-grained spatial grounding and advanced temporal attention mechanisms to ensure narrative consistency and logical "flow."
-
-2. Improved Architectural Components
-
-Improvement 1: Grounding Module (Contrastive ROI Grounding)
-
-Modification: Replaced the global Gated Multimodal Unit (GMU) with a Region-of-Interest (ROI) Contrastive Grounding mechanism.
-
-Technical Detail: Using Chain-of-Thought (CoT) annotations, specific bounding boxes for characters and objects are extracted and processed through a custom crop_and_resize pipeline.
-
-Loss Function: Implemented an InfoNCE-style contrastive loss ($\mathcal{L}_{contrast}$). This aligns regional visual embeddings with their corresponding textual descriptions in a shared latent space $\mathbb{R}^{512}$.
-
-Goal: To force the model to learn fine-grained semantic alignments between specific visual entities and text, reducing the influence of global image noise.
-
-Improvement 2: Sequence Predictor (Temporal Attention & CoT Integration)
-
-Modification: Enhanced the temporal processing unit with a Learned Attention Module and Context Augmentation.
-
-Technical Detail: A learned query vector computes attention weights over the sequence of fused outputs, creating a context vector that focuses on past "story anchors."
-
-Narrative Enhancement: Integrated CoT reasoning snippets (e.g., "Image 1 reasoning section") directly into the input descriptions.
-
-Goal: To provide the model with explicit logical context and long-range temporal dependencies, improving the coherence of predicted narrative steps.
-
-3. Pretraining Pipeline
-
-To stabilize the shared latent space before sequence training, we utilize two auxiliary self-supervised tasks:
-
-Text Autoencoding: A Seq2Seq LSTM reconstructs frame descriptions (Text $\rightarrow$ Latent $\rightarrow$ Text) to ensure high-quality narrative embeddings.
-
-Visual Autoencoding: A convolutional autoencoder reconstructs frames (Image $\rightarrow$ Latent $\rightarrow$ Image), preserving spatial content and disentangling background context from primary features.
-
-4. Experimental Results
-
-Experiment 1: ROI-Aware Grounding
-
-Hypothesis: Contrastive ROI alignment will improve visual head accuracy compared to standard global MSE grounding.
-
-Metric: Cosine Similarity for visual feature alignment.
-
-Finding: The model achieved a significant increase in visual similarity scores, confirming that regional grounding improves feature precision for narrative-relevant objects.
-
-Experiment 2: CoT Narrative Context
-
-Hypothesis: Concatenating CoT reasoning text will improve textual head coherence.
-
-Metric: BLEU-4 for textual coherence.
-
-Finding: BLEU-4 scores improved significantly (e.g., from 0.15 to 0.22), demonstrating that logical anchors help the model predict more accurate story continuations.
-
-5. Visualizations and Explainability
-
-The repository includes the following visual evidence of performance (fulfilling the 10% Explainability requirement):
-
-Table 1: Quantitative comparison (BLEU-4, L1 Loss, Cosine Similarity) between the baseline and enhanced versions.
-
-Figure 1 (Attention Heatmaps): Visualizing the model's focus on past sequence frames during the prediction of the $K+1$ frame.
-
-Figure 2 (Modality Influence): Plotting $z$ values (Modality Influence Heatmaps) to demonstrate how the model adaptively shifts between vision and text.
-
-6. Project Structure
-
-/data: Dataset loaders for the StoryReasoning dataset.
-
-/models: Implementation of the BGT, ROI Grounding, and Attention modules.
-
-/results: Training logs, saved checkpoints, and generated figures.
-
-README.md: Project documentation.
+Gated Multimodal Memory Matching (MMM): Advanced Sequential Reasoning in Visual Storytelling
+Final Project Assessment
+Subject: Deep Neural Networks - Multimodal Systems
+Abstract
+This report details the implementation of a modified multimodal architecture designed for next-frame prediction in visual narratives. By replacing static concatenation with a learnable Gated Multimodal Fusion mechanism and intro- ducing Multimodal Memory Masking (MMM), the system achieves superior cross-modal alignment. We present three experiments evaluating fusion strategies, robustness, and explainability. Experi- mental results indicate that this adaptive approach significantly improves convergence stability and narrative consistency, as verified by both quanti- tative metrics and qualitative visualizations.
+1 INTRODUCTION
+Predicting the progression of a story requires the in- tegration of historical context across visual and tex- tual domains. Traditional architectures often fail to weigh these modalities appropriately, leading to se- mantic drift. This project introduces a gated frame- work that dynamically adjusts modality importance based on temporal context and narrative content.
+2 METHODOLOGY
+2.1 Architectural Components
+The system consists of three core modules:
+• Vision Module: A dual-pathway CNN extracting object-level content and global context.
+• NLP Module: An LSTM Seq2Seq model using BERT-based tokenization for robust text latent representation.
+• Temporal Module: A Gated Recurrent Unit (GRU) with a Softmax-based attention layer for se- quence modeling.
+3 3.1
+EXPERIMENTS AND RESULTS
+Exp 1: Baseline vs. Gated Fusion
+May 12, 2026
+2.2 Gated Multimodal Fusion
+The fused representation z is computed via a learnable sigmoid gate g:
+z = g · zt + (1 − g) · zv (1)
+where zt is the text embedding and zv is the visual em- bedding. This allows for adaptive multimodal align- ment instead of fixed fusion.
+1
+The objective was to evaluate if replacing static con- catenation with gated fusion improves reasoning. The gated model demonstrated improved multimodal alignment and stronger contextual consistency in gen- erated text compared to the baseline.
+3.2 Exp 2: Multimodal Memory Masking (MMM)
+By masking textual tokens during training, the model was forced to rely on visual context. Results showed that MMM masking significantly improved contextual reasoning and multimodal robustness compared to the baseline model.
+3.3 Exp 3: Explainability Visualization
+Attention visualizations show which previous frames contribute most strongly, while Gate Heatmaps show how the model dynamically balances image and text information. The model adaptively changes modality importance depending on scene context.
+4 DIFFICULTIES FACED
+Several implementation challenges were encoun- tered:
+• Loss Balancing: Managing the scale difference between image reconstruction and text genera- tion losses.
+• Image Quality: Addressing blurry image genera- tion caused by lightweight decoders.
+• Hardware: Computational limitations on Google Colab required optimized batch management.
+5 CONCLUSION
+The Gated MMM architecture demonstrates that learnable fusion and strategic masking are superior to static methods. The resulting model is both more accurate in its narrative predictions and more inter- pretable through its gating mechanism.
+REFERENCES
+PyTorch Documentation (2024). https://pytorch.org Sutskever et al. (2014). Sequence to Sequence Learning. Vaswani et al. (2017). Attention Is All You Need.
+Radford et al. (2021). CLIP: Learning Transferable Visual Mod- els.
